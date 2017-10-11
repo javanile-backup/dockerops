@@ -6,9 +6,9 @@ sudo npm install -g dockerops
 
 ## How to use
 
-| dockerops | docker-compose    |
-|---|---|
-| dockerops | docker-compose ps |
+|   dockerops   |   docker-compose      |
+|---------------|-----------------------|
+|   dockerops   |   docker-compose ps   |
 |   |   |
 |   |   |
 
