@@ -23,7 +23,10 @@ module.exports = {
     cmdUp: function (args, callback) {
         var params = ["up"];
         params.push("-d");
-        return this.compose(params, true, callback);
+        if (args) {
+            params = params.concat(args);
+        }
+        return this.compose(params, callback);
     },
 
     /**
@@ -38,16 +41,31 @@ module.exports = {
 
     /**
      *
+     * @param args
+     */
+    cmdRun: function (args, callback) {
+        var params = ["run"];
+        //params.push("-d");
+        if (args) {
+            params = params.concat(args);
+        }
+
+        return this.compose(params, false, callback);
+    },
+
+    /**
+     *
      * @param params
      * @param callback
      */
-    compose: function (params, showErrors, callback) {
-        var compose = "docker-compose " + params.join(" ");
+    compose: function (params, callback) {
+        var compose =  + params.join(" ");
 
-        util.exec(compose, showErrors, function (output) {
+        util.exec("docker-compose", params, function (output) {
             callback(output);
         });
 
+        console.log(compose);
         return compose;
     }
 }

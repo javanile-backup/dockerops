@@ -6,7 +6,9 @@
 
 var fs = require("fs");
 var join = require("path").join;
-var exec = require("child_process").exec;
+var spawn = require("child_process").spawn;
+var exec = require("child_process").execSync;
+var user = require('username');
 
 module.exports = {
 
@@ -71,11 +73,23 @@ module.exports = {
     /**
      *
      */
-    exec: function (cmd, showErrors, callback) {
-        exec(cmd, function (error, stdout, stderr) {
-            stdout = stdout.trim();
-            stderr = stderr.trim();
-            callback(showErrors && stderr ? (stdout ? stdout + "\n" + stderr : stderr) : stdout);
+    exec: function (cmd, params) {
+
+        process.env['DOCKEROPS_HOST_USER'] = user.sync();
+        process.env['DOCKEROPS_HOST_GROUP'] = this.getGroup();
+
+        var wrapper = spawn(cmd, params);
+
+        wrapper.stdout.on("data", function (data) {
+            process.stdout.write(data.toString());
+        });
+
+        wrapper.stderr.on("data", function (data) {
+            process.stdout.write(data.toString());
+        });
+
+        wrapper.on("exit", function (code) {
+            console.log('child process exited with code ' + code.toString());
         });
     },
 
@@ -94,6 +108,13 @@ module.exports = {
      */
     saveJson: function (file, info) {
         fs.writeFileSync(file, JSON.stringify(info, null, 4));
+    },
+
+    /**
+     *
+     */
+    getGroup: function () {
+        return exec("id -g -n");
     }
 };
 

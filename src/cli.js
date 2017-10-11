@@ -17,7 +17,7 @@ module.exports = {
      */
     run: function(args, callback) {
         if (!args || args.length === 0) { return util.err("&cmd-required"); }
-
+        console.log(args);
         var cmd = args.shift().trim();
         var fnc = "cmd" + cmd.charAt(0).toUpperCase() + cmd.slice(1).toLowerCase();
 
@@ -35,6 +35,8 @@ module.exports = {
         }
 
         // handle as docker-compose service name with default OPS command
+        var service = cmd;
+        ops.cmdRun([service].concat(args), callback)
     },
 
     /**
