@@ -72,29 +72,6 @@ module.exports = {
 
     /**
      *
-     */
-    exec: function (cmd, params) {
-
-        process.env['DOCKEROPS_HOST_USER'] = user.sync();
-        process.env['DOCKEROPS_HOST_GROUP'] = this.getGroup();
-
-        var wrapper = spawn(cmd, params);
-
-        wrapper.stdout.on("data", function (data) {
-            process.stdout.write(data.toString());
-        });
-
-        wrapper.stderr.on("data", function (data) {
-            process.stdout.write(data.toString());
-        });
-
-        wrapper.on("exit", function (code) {
-            console.log('child process exited with code ' + code.toString());
-        });
-    },
-
-    /**
-     *
      * @param file
      */
     loadJson: function (file) {

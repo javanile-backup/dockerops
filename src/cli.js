@@ -16,14 +16,21 @@ module.exports = {
      * @param args
      */
     run: function(args, callback) {
-        if (!args || args.length === 0) { return util.err("&cmd-required"); }
-        console.log(args);
+        var opts = {};
+
+        if (typeof args == "undefined" || !args) { args = []; }
+
+        var info = args.indexOf("--info");
+        if (info > -1) { opts['showInfo'] = true; args.splice(info, 1); }
+
+        if (args.length === 0) { return ops.cmdPs([], opts, callback); }
+
         var cmd = args.shift().trim();
         var fnc = "cmd" + cmd.charAt(0).toUpperCase() + cmd.slice(1).toLowerCase();
 
         // Handle as OPS direct command with arguments
         if (typeof ops[fnc] === "function") {
-            return ops[fnc](args, callback);
+            return ops[fnc](args, opts, callback);
         }
 
         // Handle internal command
@@ -36,7 +43,8 @@ module.exports = {
 
         // handle as docker-compose service name with default OPS command
         var service = cmd;
-        ops.cmdRun([service].concat(args), callback)
+        if (args.length == 0) { args.push("bash"); }
+        return ops.cmdRun([service].concat(args), opts, callback)
     },
 
     /**
