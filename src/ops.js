@@ -51,6 +51,8 @@ module.exports = {
     cmdRun: function (args, opts, callback) {
         var params = ["run"];
         //params.push("-d");
+        //params.push("-d");
+        //params.push("-d");
         if (args) { params = params.concat(args); }
 
         return this.compose(params, opts, callback);
