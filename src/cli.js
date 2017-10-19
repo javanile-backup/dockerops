@@ -41,7 +41,12 @@ module.exports = {
                 return this.getVersion();
         }
 
-        // handle as docker-compose service name with default OPS command
+        // Handle defaults commands
+        if (ops.defaults.indexOf(cmd) > -1) {
+            return ops.runDefault([cmd].concat(args), opts, callback)
+        }
+
+        // Handle as docker-compose service name with default OPS command
         var service = cmd;
         opts['showInfo'] = true;
         if (args.length == 0) { args.push("bash"); }

@@ -21,14 +21,38 @@ module.exports = {
     cwd: process.cwd(),
 
     /**
+     * Contain current working direcotry.
+     * @var string
+     */
+    environments: ["--dev", "--demo", "--test", "--uat", "--prod"],
+
+    /**
+     *
+     *
+     */
+    defaults: [
+        "build", "bundle", "config", "create", "down", "events",
+        "exec", "help", "kill", "logs", "pause", "port", "ps",
+        "pull", "push", "restart", "rm", "run", "scale",
+        "start", "stop", "unpause", "up", "version"
+    ],
+
+    /**
      * Perform "docker-compose up" base command.
      *
      * @param args
      */
     cmdUp: function (args, opts, callback) {
-        var params = ["up"];
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
+
+        params.push("up");
         params.push("-d");
         params.push("--remove-orphans");
+
         if (args) { params = params.concat(args); }
 
         return this.compose(params, opts, callback);
@@ -42,6 +66,8 @@ module.exports = {
     cmdPs: function (args, opts, callback) {
         var params = ["ps"];
         //params.push("-d");
+        params = params.concat(this.getEnvironmentParams(args));
+
         opts['hideStdErr'] = true;
         return this.compose(params, opts, callback);
     },
@@ -97,6 +123,22 @@ module.exports = {
     },
 
     /**
+     * Perform "docker-compose up" base command.
+     *
+     * @param args
+     */
+    runDefault: function (args, opts, callback) {
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
+        if (args) { params = params.concat(args); }
+
+        return this.compose(params, opts, callback);
+    },
+
+    /**
      * Perform "docker-compose" base command.
      *
      * @param args
@@ -121,41 +163,87 @@ module.exports = {
 
     /**
      *
+     *
+     */
+    hasEnvironment: function (args) {
+        for (var i in this.environments) {
+            if (args.indexOf(this.environments[i]) > -1) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    /**
+     *
+     *
+     */
+    getEnvironmentParams: function (args) {
+        var params = ["-f", "docker-compose.yml"];
+        for (var i in args) {
+            var env = args[i];
+            if (this.environments.indexOf(env) > -1) {
+                params = params.concat(["-f", "docker-compose."+env.substr(2)+".yml"]);
+            }
+        }
+        return params;
+    },
+
+    /**
+     *
+     *
+     */
+    removeEnvironment: function (args) {
+        for (var i in this.environments) {
+            var env = args.indexOf(this.environments[i]);
+            if (env > -1) { args.splice(env, 1); }
+        }
+        return args;
+    },
+
+    /**
+     *
      */
     exec: function (cmd, params, opts, callback) {
         process.env['DOCKEROPS_HOST_USER'] = user.sync();
         process.env['DOCKEROPS_HOST_GROUP'] = util.getGroup();
 
+        var rawCommand = cmd + " " + params.join(" ");
+
         if (util.isEnabled(opts, 'showInfo')) {
-            util.info("exec", cmd + " " + params.join(" "));
+            util.info("exec", rawCommand);
         }
 
+        // Running command
         var wrapper = spawn(cmd, params);
 
-        //
+        // Attach stdout handler
         wrapper.stdout.on("data", function (data) {
             if (util.isEnabled(opts, 'hideStdOut')) { return; }
             process.stdout.write(data.toString());
         });
 
-        //
+        // Attach stderr handler
         wrapper.stderr.on("data", function (data) {
             if (util.isEnabled(opts, 'hideStdErr')) { return; }
             process.stdout.write(data.toString());
         });
 
-        //
+        // Attach exit handler
         wrapper.on("exit", function (code) {
-            if (util.isEnabled(opts, 'showInfo')) {
-                var code = code.toString();
-                var msg = "sound like success.";
-                if (code != "0") {
-                    msg = "some error occurred.";
-                }
-                util.info('done',  "(exit="+code+") " + msg);
+            var code = code.toString();
+            var info = util.isEnabled(opts, 'showInfo');
+            if (!info && code != "0") {
+                info = true
+                util.info("exec", rawCommand);
+            }
+            if (info) {
+                var msg = "sounds like success.";
+                if (code != "0") { msg = "some error occurred."; }
+                util.info("done",  "(exit="+code+") " + msg);
             }
         });
 
-        return cmd + " " + params.join(" ");
+        return rawCommand;
     }
 }
