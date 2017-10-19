@@ -3,9 +3,9 @@
 var cli = require("../src/cli");
 var ops = require("../src/ops");
 var util = require("../src/util");
-var chai = require('chai');
+var chai = require("chai");
 
-chai.use(require('chai-fs'));
+chai.use(require("chai-fs"));
 
 describe("Testing command-line interface", function () {
 
