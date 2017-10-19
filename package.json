@@ -1,6 +1,6 @@
 {
     "name": "dockerops",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "license": "MIT",
     "author": {
         "name": "Francesco Bianco",
@@ -23,6 +23,8 @@
         "mocha": "^3.2.0"
     },
     "dependencies": {
-        "username": "^3.0.0"
+        "colors": "^1.1.2",
+        "username": "^3.0.0",
+        "wordwrap": "^1.0.0"
     }
 }

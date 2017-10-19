@@ -43,8 +43,9 @@ module.exports = {
 
         // handle as docker-compose service name with default OPS command
         var service = cmd;
+        opts['showInfo'] = true;
         if (args.length == 0) { args.push("bash"); }
-        return ops.cmdRun([service].concat(args), opts, callback)
+        return ops.cmdExec([service].concat(args), opts, callback)
     },
 
     /**

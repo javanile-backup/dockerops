@@ -8,7 +8,9 @@ var fs = require("fs");
 var join = require("path").join;
 var spawn = require("child_process").spawn;
 var exec = require("child_process").execSync;
-var user = require('username');
+var wrap = require('wordwrap');
+var user = require("username");
+var col = require("colors");
 
 module.exports = {
 
@@ -36,6 +38,27 @@ module.exports = {
 
     /**
      *
+     * @param key
+     * @param msg
+     */
+    info: function (key, msg) {
+        var offset = 11 + key.length;
+        var column = process.stdout.columns - offset;
+        msg = this.indent(wrap(column)(msg), offset);
+        console.log(col.yellow.bold("<<info>> "+key+":"), col.white(msg));
+    },
+
+    /**
+     *
+     * @param opts
+     * @param key
+     */
+    isEnabled: function (opts, key) {
+        return typeof opts[key] != "undefined" && opts[key]
+    },
+
+    /**
+     *
      * @param token
      */
     applyTokens: function (msg, tokens) {
@@ -50,8 +73,8 @@ module.exports = {
     /**
      *
      */
-    indent: function (pre, msg) {
-        return pre + msg.split("\n").join("\n" + this.pad(pre.length));
+    indent: function (msg, offset) {
+        return msg.split("\n").join("\n" + this.pad(offset));
     },
 
     /**

@@ -21,6 +21,7 @@ module.exports = {
     cwd: process.cwd(),
 
     /**
+     * Perform "docker-compose up" base command.
      *
      * @param args
      */
@@ -34,6 +35,7 @@ module.exports = {
     },
 
     /**
+     * Perform "docker-compose ps" base command.
      *
      * @param args
      */
@@ -45,6 +47,27 @@ module.exports = {
     },
 
     /**
+     * Perform "docker-compose run" base command.
+     *
+     * @param args
+     */
+    cmdStop: function (args, opts, callback) {
+        var params = ["stop"];
+        //params.push("-d");
+        //params.push("-d");
+        //params.push("-d");
+        if (args) {
+            if (args.indexOf("--all") > -1) {
+                return this.dockerStopAll(args, opts, callback)
+            }
+            params = params.concat(args);
+        }
+
+        return this.compose(params, opts, callback);
+    },
+
+    /**
+     * Perform "docker-compose run" base command.
      *
      * @param args
      */
@@ -59,9 +82,24 @@ module.exports = {
     },
 
     /**
+     * Perform "docker-compose exec" base command.
      *
-     * @param params
-     * @param callback
+     * @param args
+     */
+    cmdExec: function (args, opts, callback) {
+        var params = ["exec"];
+        //params.push("-d");
+        //params.push("-d");
+        //params.push("-d");
+        if (args) { params = params.concat(args); }
+
+        return this.compose(params, opts, callback);
+    },
+
+    /**
+     * Perform "docker-compose" base command.
+     *
+     * @param args
      */
     compose: function (params, opts, callback) {
         return this.exec("docker-compose", params, opts, function (output) {
@@ -71,31 +109,51 @@ module.exports = {
 
     /**
      *
+     *
+     */
+    dockerStopAll: function (args, opts, callback) {
+        opts['showInfo'] = true;
+        var containers = exec("docker ps -q -a")+"";
+        containers = containers.trim().split("\n");
+        opts['hideStdOut'] = true;
+        return this.exec("docker", ["stop"].concat(containers), opts, callback);
+    },
+
+    /**
+     *
      */
     exec: function (cmd, params, opts, callback) {
         process.env['DOCKEROPS_HOST_USER'] = user.sync();
         process.env['DOCKEROPS_HOST_GROUP'] = util.getGroup();
 
-        if (typeof opts['showInfo'] != "undefined" && opts['showInfo']) {
-            console.log("<<dockerops>> <<exec>>", cmd, params.join(" "), "\n");
+        if (util.isEnabled(opts, 'showInfo')) {
+            util.info("exec", cmd + " " + params.join(" "));
         }
 
         var wrapper = spawn(cmd, params);
 
         //
         wrapper.stdout.on("data", function (data) {
+            if (util.isEnabled(opts, 'hideStdOut')) { return; }
             process.stdout.write(data.toString());
         });
 
         //
         wrapper.stderr.on("data", function (data) {
-            if (typeof opts['hideStdErr'] != "undefined" && opts['hideStdErr']) { return; }
+            if (util.isEnabled(opts, 'hideStdErr')) { return; }
             process.stdout.write(data.toString());
         });
 
         //
         wrapper.on("exit", function (code) {
-            //console.log('child process exited with code ' + code.toString());
+            if (util.isEnabled(opts, 'showInfo')) {
+                var code = code.toString();
+                var msg = "sound like success.";
+                if (code != "0") {
+                    msg = "some error occurred.";
+                }
+                util.info('done',  "(exit="+code+") " + msg);
+            }
         });
 
         return cmd + " " + params.join(" ");
