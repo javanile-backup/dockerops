@@ -123,6 +123,25 @@ module.exports = {
     },
 
     /**
+     * Perform "docker-compose exec" base command.
+     *
+     * @param args
+     */
+    cmdDebug: function (args, opts, callback) {
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
+
+        params.push("up");
+
+        if (args) { params = params.concat(args); }
+
+        return this.compose(params, opts, callback);
+    },
+
+    /**
      * Perform "docker-compose up" base command.
      *
      * @param args
