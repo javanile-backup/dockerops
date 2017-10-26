@@ -64,11 +64,15 @@ module.exports = {
      * @param args
      */
     cmdPs: function (args, opts, callback) {
-        var params = ["ps"];
-        //params.push("-d");
-        params = params.concat(this.getEnvironmentParams(args));
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
 
+        params.push("ps");
         opts['hideStdErr'] = true;
+
         return this.compose(params, opts, callback);
     },
 
@@ -113,10 +117,14 @@ module.exports = {
      * @param args
      */
     cmdExec: function (args, opts, callback) {
-        var params = ["exec"];
-        //params.push("-d");
-        //params.push("-d");
-        //params.push("-d");
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
+
+        params.push("exec");
+
         if (args) { params = params.concat(args); }
 
         return this.compose(params, opts, callback);
