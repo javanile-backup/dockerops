@@ -135,7 +135,19 @@ module.exports = {
 
         params.push("exec");
 
-        if (args) { params = params.concat(args); }
+        for (var i in args) {
+            if (!args.hasOwnProperty(i)) { continue; }
+            if (args[i] == "--mysql-import") {
+                var next = parseInt(i) + 1;
+                if (!args[next]) {
+                    return util.err("File to import missing, type filename after --mysql-import");
+                }
+                if (args.indexOf("bash") == -1) { params.push("bash"); }
+                params.push("-c");
+                params.push('"mysql -h127.0.0.1 -uroot -p\\$MYSQL_ROOT_PASSWORD \\$MYSQL_DATABASE < '+args[next]+'"');
+            }
+            params.push(args[i]);
+        }
 
         return this.compose(params, opts, callback);
     },

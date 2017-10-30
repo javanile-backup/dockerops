@@ -33,7 +33,10 @@ module.exports = {
             case "&cmd-undefined": msg = "Undefined command '${cmd}', type 'ndev --help'."; break;
             case "&cmd-required":  msg = "Command required, type 'ndev --help'."; break;
         }
-        return this.applyTokens(msg, tokens);
+        return console.log(
+            col.red.bold("<<error>>"),
+            col.white(this.applyTokens(msg, tokens))
+        );
     },
 
     /**
