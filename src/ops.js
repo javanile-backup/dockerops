@@ -4,31 +4,34 @@
  * MIT Licensed
  */
 
-var fs = require("fs");
-var join = require("path").join;
-var spawn = require("child_process").spawn;
-var exec = require("child_process").execSync;
-var user = require('username');
-var base = require("path").basename;
-var util = require("./util");
+var fs = require("fs"),
+    join = require("path").join,
+    spawn = require("child_process").spawn,
+    exec = require("child_process").execSync,
+    user = require('username'),
+    base = require("path").basename,
+    util = require("./util");
 
 module.exports = {
 
     /**
      * Contain current working direcotry.
+     *
      * @var string
      */
     cwd: process.cwd(),
 
     /**
      * Contain current working direcotry.
+     *
      * @var string
      */
     environments: ["--dev", "--demo", "--test", "--uat", "--prod"],
 
     /**
+     * Defaults docker-compose commands.
      *
-     *
+     * @var array
      */
     defaults: [
         "build", "bundle", "config", "create", "down", "events",
@@ -82,16 +85,19 @@ module.exports = {
      * @param args
      */
     cmdStop: function (args, opts, callback) {
-        var params = ["stop"];
-        //params.push("-d");
-        //params.push("-d");
-        //params.push("-d");
-        if (args) {
-            if (args.indexOf("--all") > -1) {
-                return this.dockerStopAll(args, opts, callback)
-            }
-            params = params.concat(args);
+        if (args && args.indexOf("--all") > -1) {
+            return this.dockerStopAll(args, opts, callback)
         }
+
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
+
+        params.push("stop");
+
+        params = params.concat(args);
 
         return this.compose(params, opts, callback);
     },
@@ -102,10 +108,14 @@ module.exports = {
      * @param args
      */
     cmdRun: function (args, opts, callback) {
-        var params = ["run"];
-        //params.push("-d");
-        //params.push("-d");
-        //params.push("-d");
+        var params = [];
+        if (this.hasEnvironment(args)) {
+            params = params.concat(this.getEnvironmentParams(args));
+            args = this.removeEnvironment(args);
+        }
+
+        params.push("run");
+
         if (args) { params = params.concat(args); }
 
         return this.compose(params, opts, callback);
@@ -160,6 +170,7 @@ module.exports = {
             params = params.concat(this.getEnvironmentParams(args));
             args = this.removeEnvironment(args);
         }
+
         if (args) { params = params.concat(args); }
 
         return this.compose(params, opts, callback);
@@ -177,7 +188,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Stop all running containers.
      *
      */
     dockerStopAll: function (args, opts, callback) {
@@ -189,7 +200,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Check if args contain envrironment specification.
      *
      */
     hasEnvironment: function (args) {
@@ -202,7 +213,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Get docker-compose argument based on environment.
      *
      */
     getEnvironmentParams: function (args) {
@@ -217,7 +228,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Remove environmnent argument on a list of args.
      *
      */
     removeEnvironment: function (args) {
@@ -229,7 +240,7 @@ module.exports = {
     },
 
     /**
-     *
+     * Exec command with spawn.
      */
     exec: function (cmd, params, opts, callback) {
         process.env['DOCKEROPS_HOST_USER'] = user.sync();
@@ -273,4 +284,4 @@ module.exports = {
 
         return rawCommand;
     }
-}
+};

@@ -4,14 +4,15 @@
  * MIT Licensed
  */
 
-var fs   = require("fs");
-var path = require("path");
-var util = require("./util");
-var ops  = require("./ops");
+var fs = require("fs"),
+    path = require("path"),
+    util = require("./util"),
+    ops = require("./ops");
 
 module.exports = {
+
     /**
-     *
+     * Command line entry-point.
      *
      * @param args
      */
@@ -23,7 +24,9 @@ module.exports = {
         var info = args.indexOf("--info");
         if (info > -1) { opts['showInfo'] = true; args.splice(info, 1); }
 
-        if (args.length === 0) { return ops.cmdPs([], opts, callback); }
+        if (args.length === 0 || (args.length === 1 && ops.hasEnvironment(args))) {
+            return ops.cmdPs(args, opts, callback);
+        }
 
         var cmd = args.shift().trim();
         var fnc = "cmd" + cmd.charAt(0).toUpperCase() + cmd.slice(1).toLowerCase();
@@ -49,19 +52,20 @@ module.exports = {
         // Handle as docker-compose service name with default OPS command
         var service = cmd;
         opts['showInfo'] = true;
-        if (args.length == 0) { args.push("bash"); }
+        if (args.length == 0 || (args.length === 1 && ops.hasEnvironment(args))) { args.push("bash"); }
         return ops.cmdExec([service].concat(args), opts, callback)
     },
 
     /**
+     * Get sotware help.
      *
      * @param args
      */
     getHelp: function (args) {
         var help = path.join(__dirname, "../help/help.txt");
-        if (!args[0]) { return fs.readFileSync(help); }
+        if (!args[0]) { return console.log(fs.readFileSync(help)+""); }
         help = path.join(__dirname, "../help/" + args[0] + ".txt");
-        if (fs.existsSync(help)) { return fs.readFileSync(help); }
+        if (fs.existsSync(help)) { return console.log(fs.readFileSync(help)); }
         return util.err("&cmd-undefined", { cmd: args[0] });
     },
 

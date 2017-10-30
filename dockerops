@@ -5,6 +5,8 @@
  * MIT Licensed
  */
 
+"use strict";
+
 var fs = require("fs");
 var path = require("path");
 var local = path.join(process.cwd(), "node_modules/dockerops/src/cli.js");
