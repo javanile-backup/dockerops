@@ -28,7 +28,17 @@ module.exports = {
             return ops.cmdPs(args, opts, callback);
         }
 
-        var cmd = args.shift().trim();
+        var cmd = "ps";
+
+        for (var i in args) {
+            if (!args.hasOwnProperty(i)) { continue; }
+            if (args[i].charAt(0) != "-") {
+                cmd = args[i];
+                args.splice(i, 1);
+                break;
+            }
+        }
+
         var fnc = "cmd" + cmd.charAt(0).toUpperCase() + cmd.slice(1).toLowerCase();
 
         // Handle as OPS direct command with arguments
