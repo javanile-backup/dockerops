@@ -24,7 +24,7 @@ module.exports = {
     /**
      * Contain current working direcotry.
      *
-     * @var string
+     * @var array
      */
     environments: ["--dev", "--demo", "--test", "--uat", "--prod"],
 
@@ -229,13 +229,22 @@ module.exports = {
      *
      */
     getEnvironmentParams: function (args) {
-        var params = ["-f", "docker-compose.yml"];
+        var params = []
+
+        if (fs.existsSync(join(this.cwd, "docker-compose.yml"))) {
+            params = params.concat(["-f", "docker-compose.yml"]);
+        }
+
         for (var i in args) {
             var env = args[i];
             if (this.environments.indexOf(env) > -1) {
-                params = params.concat(["-f", "docker-compose."+env.substr(2)+".yml"]);
+                var file = "docker-compose."+env.substr(2)+".yml";
+                if (fs.existsSync(join(this.cwd, file))) {
+                    params = params.concat(["-f", file]);
+                }
             }
         }
+
         return params;
     },
 

@@ -14,7 +14,8 @@ module.exports = {
     /**
      * Command line entry-point.
      *
-     * @param args
+     * @param {array} args a list of arguments
+     * @returns {string}
      */
     run: function(args, callback) {
         var opts = {};
