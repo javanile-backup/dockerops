@@ -1,6 +1,6 @@
 {
     "name": "dockerops",
-    "version": "0.0.36",
+    "version": "0.0.37",
     "license": "MIT",
     "author": {
         "name": "Francesco Bianco",
@@ -11,7 +11,7 @@
         "url": "https://github.com/javanile/dockerops.git"
     },
     "bin": {
-        "dockerops": "./dockerops"
+        "dockerops": "./bin/dockerops"
     },
     "scripts": {
         "test": "mocha --reporter spec --recursive | sed '/^\\s*$/d'",
