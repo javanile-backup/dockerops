@@ -47,16 +47,17 @@ module.exports = {
      */
     cmdUp: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("up");
         params.push("-d");
         params.push("--remove-orphans");
 
-        if (args) { params = params.concat(args); }
+        if (tail) { params = params.concat(tail); }
 
         return this.compose(params, opts, callback);
     },
@@ -68,14 +69,15 @@ module.exports = {
      */
     cmdBuild: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("build");
 
-        if (args) { params = params.concat(args); }
+        if (args) { params = params.concat(tail); }
 
         return this.compose(params, opts, callback);
     },
@@ -87,13 +89,14 @@ module.exports = {
      */
     cmdPs: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("ps");
-        params = params.concat(args);
+        params = params.concat(tail);
 
         //opts['hideStdErr'] = false;
 
@@ -111,13 +114,14 @@ module.exports = {
         }
 
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("stop");
-        params = params.concat(args);
+        params = params.concat(tail);
 
         return this.compose(params, opts, callback);
     },
@@ -133,14 +137,15 @@ module.exports = {
         }
 
         var params = [];
+        var tail = [].concat(args);
         if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("rm");
         params.push("-f");
-        params = params.concat(args);
+        params = params.concat(tail);
 
         return this.compose(params, opts, callback);
     },
@@ -152,14 +157,15 @@ module.exports = {
      */
     cmdRun: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("run");
 
-        if (args) { params = params.concat(args); }
+        if (tail) { params = params.concat(tail); }
 
         return this.compose(params, opts, callback);
     },
@@ -171,25 +177,26 @@ module.exports = {
      */
     cmdExec: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("exec");
 
-        for (var i in args) {
-            if (!args.hasOwnProperty(i)) { continue; }
-            if (args[i] == "--mysql-import") {
+        for (var i in tail) {
+            if (!tail.hasOwnProperty(i)) { continue; }
+            if (tail[i] == "--mysql-import") {
                 var next = parseInt(i) + 1;
-                if (!args[next]) {
+                if (!tail[next]) {
                     return util.err("File to import missing, type filename after --mysql-import");
                 }
-                if (args.indexOf("bash") == -1) { params.push("bash"); }
+                if (tail.indexOf("bash") == -1) { params.push("bash"); }
                 params.push("-c");
-                params.push('"mysql -h127.0.0.1 -uroot -p\\$MYSQL_ROOT_PASSWORD \\$MYSQL_DATABASE < '+args[next]+'"');
+                params.push('"mysql -h127.0.0.1 -uroot -p\\$MYSQL_ROOT_PASSWORD \\$MYSQL_DATABASE < '+tail[next]+'"');
             }
-            params.push(args[i]);
+            params.push(tail[i]);
         }
 
         return this.compose(params, opts, callback);
@@ -202,14 +209,15 @@ module.exports = {
      */
     cmdDebug: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
         params.push("up");
 
-        if (args) { params = params.concat(args); }
+        if (tail) { params = params.concat(tail); }
 
         return this.compose(params, opts, callback);
     },
@@ -237,12 +245,13 @@ module.exports = {
      */
     runDefault: function (args, opts, callback) {
         var params = [];
-        if (this.hasEnvironment(args)) {
-            params = params.concat(this.getEnvironmentParams(args));
-            args = this.removeEnvironment(args);
+        var tail = [].concat(args);
+        if (this.hasEnvironment(tail)) {
+            params = params.concat(this.getEnvironmentParams(tail));
+            tail = this.removeEnvironment(tail);
         }
 
-        if (args) { params = params.concat(args); }
+        if (tail) { params = params.concat(tail); }
 
         return this.compose(params, opts, callback);
     },
@@ -265,10 +274,10 @@ module.exports = {
      *
      */
     dockerStopAll: function (args, opts, callback) {
-        opts['showInfo'] = true;
-        var containers = exec("docker ps -q -a")+"";
+        opts["showInfo"] = true;
+        var containers = exec("docker ps -q -a") + "";
         containers = containers.trim().split("\n");
-        opts['hideStdOut'] = true;
+        opts["hideStdOut"] = true;
         return this.exec("docker", ["stop"].concat(containers), opts, callback);
     },
 
@@ -278,7 +287,7 @@ module.exports = {
      */
     dockerRmAll: function (args, opts, callback) {
         opts['showInfo'] = true;
-        var containers = exec("docker ps -q -a")+"";
+        var containers = exec("docker ps -q -a") + "";
         containers = containers.trim().split("\n");
         opts['hideStdOut'] = true;
         return this.exec("docker", ["stop"].concat(containers), opts, callback);
@@ -311,7 +320,7 @@ module.exports = {
         for (var i in args) {
             var env = args[i];
             if (this.environments.indexOf(env) > -1) {
-                var file = "docker-compose."+env.substr(2)+".yml";
+                var file = "docker-compose." + env.substr(2) + ".yml";
                 if (fs.existsSync(join(this.cwd, file))) {
                     params = params.concat(["-f", file]);
                 }
@@ -337,14 +346,14 @@ module.exports = {
      * Exec command with spawn.
      */
     exec: function (cmd, params, opts, callback) {
-        process.env['DOCKEROPS_HOST_USER'] = user.sync();
-        process.env['DOCKEROPS_HOST_GROUP'] = util.getGroup();
+        process.env["DOCKEROPS_HOST_USER"] = user.sync();
+        process.env["DOCKEROPS_HOST_GROUP"] = util.getGroup();
 
         // Raw command
         var rawCommand = cmd + " " + params.join(" ");
 
         // Check info
-        var info = util.isEnabled(opts, 'showInfo');
+        var info = util.isEnabled(opts, "showInfo");
         if (info) { util.info("spawn", rawCommand); }
 
         // Running command
@@ -352,16 +361,17 @@ module.exports = {
 
         // Attach stdout handler
         wrapper.stdout.on("data", function (data) {
-            if (util.isEnabled(opts, 'hideStdOut')) { return; }
+            if (util.isEnabled(opts, "hideStdOut")) { return; }
             process.stdout.write(data.toString());
         });
 
         // Attach stderr handler
         wrapper.stderr.on("data", function (data) {
-            if (util.isEnabled(opts, 'hideStdErr')) { return; }
-            if (!info) { util.info("spawn", rawCommand); info = true; }
+            if (util.isEnabled(opts, "hideStdErr")) { return; }
             var msg = data.toString();
-            //if (msg.length < 100) { return util.err(msg); }
+            var err = msg.match(/error/i);
+            if (!info && err) { util.info("spawn", rawCommand); info = true; }
+            if (msg.length < 100 && err) { return util.err(msg); }
             return process.stdout.write(msg);
         });
 
@@ -371,7 +381,7 @@ module.exports = {
             if (info) {
                 var msg = "sounds like success.";
                 if (code != "0") { msg = "some error occurred."; }
-                util.info("exit",  "(code="+code+") " + msg);
+                util.info("exit",  "(code=" + code + ") " + msg);
             }
             if (typeof callback === "function") {
                 callback();
