@@ -98,7 +98,7 @@ module.exports = {
         params.push("ps");
         params = params.concat(tail);
 
-        //opts['hideStdErr'] = false;
+        //opts["hideStdErr"] = false;
 
         return this.compose(params, opts, callback);
     },
