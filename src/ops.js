@@ -63,7 +63,7 @@ module.exports = {
     },
 
     /**
-     * Perform "docker-compose up" base command.
+     * Perform "docker-compose build" base command.
      *
      * @param args
      */
