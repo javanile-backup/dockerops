@@ -194,7 +194,9 @@ module.exports = {
                 }
                 if (tail.indexOf("bash") == -1) { params.push("bash"); }
                 params.push("-c");
-                params.push('"mysql -h127.0.0.1 -uroot -p\\$MYSQL_ROOT_PASSWORD \\$MYSQL_DATABASE < '+tail[next]+'"');
+                params.push('"mysql -h127.0.0.1 -uroot -p\\$MYSQL_ROOT_PASSWORD \\$MYSQL_DATABASE < ' + tail[next] + '"');
+                delete tail[next];
+                continue;
             }
             params.push(tail[i]);
         }
