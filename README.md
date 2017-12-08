@@ -1,7 +1,3 @@
-<aside class="notice">
-Dockerops it is a development tool, please not use in production environments.
-</aside>
-
 # dockerops
 
 [![Build Status](https://travis-ci.org/javanile-bot/dockerops.svg?branch=master)](https://travis-ci.org/javanile-bot/dockerops)
@@ -9,6 +5,8 @@ Dockerops it is a development tool, please not use in production environments.
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0d76f0f853fa588d8a53/test_coverage)](https://codeclimate.com/github/javanile-bot/dockerops/test_coverage)
 
 Super-fantastic wrapper for docker-compose operations
+
+> DISCLAIMER: Dockerops it is a development tool, please not use in production environments.
 
 ## How to install
 
