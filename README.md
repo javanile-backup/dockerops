@@ -16,7 +16,7 @@ sudo npm install -g dockerops
 
 ## How to use
 
-|  dockerops                   |  docker-compose                         |
+|_. dockerops                  |_. docker-compose                        |
 |------------------------------|-----------------------------------------|
 | `dockerops`                  | `docker-compose ps`                     |
 | `dockerops up`               | `docker-compose up -d --remove-orphans` |
