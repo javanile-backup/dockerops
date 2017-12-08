@@ -6,7 +6,7 @@
 
 Super-fantastic wrapper for docker-compose operations
 
-> **DISCLAIMER**: Dockerops it is a development tool, please not use in production environments.
+> **DISCLAIMER**: Dockerops it is a _development tool_, please not use in production environments.
 
 ## How to install
 
