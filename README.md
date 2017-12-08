@@ -23,10 +23,10 @@ sudo npm install -g dockerops
 | `dockerops stop`             | `docker-compose stop`                   |
 | `dockerops stop --all`       | `docker stop $(docker pa -q -a)`        |
 | `dockerops <service>`        | `docker-compose exec <service> bash`    |
-| `dockerops format <service>` | `docker-compose stop <service>`          
-                                 `&& docker-compose rm -f <service>`      
-                                 `&& docker-compose build <service>`      
-                                 `&& docker-compose up -d <service>`     |
+| `dockerops format <service>` | ```docker-compose stop <service>          
+                                 && docker-compose rm -f <service>      
+                                 && docker-compose build <service>      
+                                 && docker-compose up -d <service>```    |
 | `dockerops format <service>` | `docker-compose stop <service>`          
                                  `&& docker-compose rm -f <service>`      
                                  `&& docker-compose build <service>`      
