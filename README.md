@@ -1,3 +1,7 @@
+<aside class="warning">
+Dockerops it is a development tool, please not use in production environments.
+</aside>
+
 # dockerops
 
 [![Build Status](https://travis-ci.org/javanile-bot/dockerops.svg?branch=master)](https://travis-ci.org/javanile-bot/dockerops)
