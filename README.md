@@ -1,4 +1,4 @@
-<aside class="warning">
+<aside class="notice">
 Dockerops it is a development tool, please not use in production environments.
 </aside>
 
